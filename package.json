@@ -4,7 +4,8 @@
   "description": "Some examples on how to store and retrieve files from MongoDb",
   "main": "app.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha   -u bdd -R spec"
+    "start" : "nodemon index.js",
+    "test": "./node_modules/mocha/bin/mocha -b -u bdd -R spec -w"
   },
   "repository": {
     "type": "git",

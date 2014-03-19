@@ -82,11 +82,5 @@ module.exports.removeAllFiles = function (callback) {
     db.collection("fs.files").findAndRemove({}, function (err, number) {
       if(err){ return console.dir(err); }
     });
-
-    // And the same thing... but for the chunks... you remember?
-    // where mongo stores the data
-    db.collection("fs.chunks").findAndRemove({}, function (err, number) {
-      if(err){ return console.dir(err); }
-    });
   });
 };

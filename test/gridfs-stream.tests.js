@@ -9,9 +9,7 @@ describe("GridFs-Stream is a nicer way to handle GridFs IMHO", function () {
 	var OUTPUT_FILE_PATH = './img/b.gif';
 
 	beforeEach(function (done) {
-		if(fs.existsSync(OUTPUT_FILE_PATH)){
-			fs.unlinkSync(OUTPUT_FILE_PATH);
-		}
+		utils.deleteFromDisk(OUTPUT_FILE_PATH);
 		done();
 	});
 

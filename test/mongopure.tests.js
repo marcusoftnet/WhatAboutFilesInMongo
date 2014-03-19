@@ -1,12 +1,12 @@
 var should = require("should");
-var fsAccessor = require("../mongodriver.js");
+var fsAccessor = require("../usingMongoDriver.js");
 var utils = require("../utils.js");
 
 describe("The Mongo driver has a api to the GridFs", function () {
 	var A_KEY = "a_key_to_retrive_the_file_by";
 
 	afterEach(function (done) {
-		utils.removeAllFiles(); 
+		utils.removeAllFiles();
 		done();
 	});
 

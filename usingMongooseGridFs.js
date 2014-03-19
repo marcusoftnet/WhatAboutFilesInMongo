@@ -1,54 +1,59 @@
-var mongo = require('mongodb');
-var Db = mongo.Db;
 var fs = require('fs');
+var mongoose = require('mongoose');
 var Grid = require('gridfs-stream');
 var config = require('./config.js').config;
 var utils = require('./utils.js');
 var imgDir = "./img/";
 
+// Remember that we had to connect to the db and
+// then pass the db and the mongo as parameters
+// when we created the gridsfs-stream.Grid?
+
+// There's a simpler way... especially with Mongoose
+// that just creates the connection once.
+// First we can set the Mongo-property already up here,
+// by just pulling it out of mongoose
+Grid.mongo = mongoose.mongo;
+
+// Secondly, the database parameter can be pulled from the mongoose connection
+// We wrap this in a little function that returns the grid
+var createGrid = function () {
+	// We need to make sure that the connection is open.
+	// and of course readyState 0 is Not open. What did you think?
+	if(mongoose.connection.readyState === 0) {
+
+		// Ok, not open yet.
+		// lets open it
+		mongoose.connect("mongodb://" + config.mongoDbUrl);
+	}
+
+	// Creating the grid is now easy
+	// return Grid(mongoose.connection, Grid.mongo);
+
+	// In fact... since we have set the Grid.mongo already
+	// we could use a constructor that takes only the connection
+	// like this:
+	return Grid(mongoose.connection);
+};
+
 
 module.exports.storeFileFromDisk = function (filename, key, callback) {
-	// we first need to open the mongo database
-	Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-		// now we create the Grid (from the gridfs-stream package)
-		// passing the db and the mongo-object
-		// Watch out here. This is NOT the mongo.Grid but rather the
-		// var Grid = require('gridfs-stream') from above
-		// the db and the mongo are from the
-		// var mongo = require("mongo") and var db = mongo.db respectively
-		var gfs = Grid(db, mongo);
+	// Now we can create the gridfs-stream grid in one line
+	var gfs = createGrid();
 
-		// Oh man, here they go again with the streams...
-		// Well I supposed that could be expected considering
-		// the name of the package.
-		// I. Will. Understand. This.
-		// These are not the streams you've come to hate, he said and made a swooping gesture with his hand
-
-		// Ok, we create a stream passing the name
-		// and content type of the file
-		// as well as some meta data that we will use to search for the file
-		var writestream = gfs.createWriteStream({
-		    filename: filename,
-		    metadata : { key : key }
-		});
-
-		// And now... we create a read stream for the file...
-		// and pipe it to the write stream...
-		// I must lay down awhile.
-
-		// Ok, a readstream is used to read stuff with
-		// and piping it is just telling it what's going to happen next...
-		// But AHA, I think I got it.
-		// the first read stream is from the fs (FileSystem)
-		// This line is basically saying this:
-		// - read the filename into a stream from the file system
-		// - and take that result and use that for the write stream
-		var filePath = imgDir + filename;
-		fs.createReadStream(filePath).pipe(writestream);
-
-		// Let's for now just say that it worked
-		callback('Dude, it worked!');
+	// And in fact, the rest of the code is exactly the same
+	// as before, in the usingGridFsStream.js
+	// here we go, but with less comments
+	var writestream = gfs.createWriteStream({
+	    filename: filename,
+	    metadata : { key : key }
 	});
+
+	var filePath = imgDir + filename;
+	fs.createReadStream(filePath).pipe(writestream);
+
+	// Let's for now just say that it worked
+	callback('Dude, it worked!');
 };
 
 var getFileInfoByKeyInMetadata = function (keySentIn, callback) {

@@ -3,7 +3,7 @@ var should = require("should");
 var utils = require("../utils.js");
 var fsAccess = require("../usingGridFsStream.js");
 
-describe("GridFs-Stream is a nicer way to store files", function () {
+describe("GridFs-Stream is a nicer way to handle GridFs IMHO", function () {
 	var A_KEY = "a_key_to_retrive_the_file_by";
 	var FILE_NAME = "a.gif";
 	var OUTPUT_FILE_PATH = './img/b.gif';
@@ -16,7 +16,7 @@ describe("GridFs-Stream is a nicer way to store files", function () {
 	});
 
 	afterEach(function (done) {
-		utils.removeAllFiles(); 
+		utils.removeAllFiles();
 		done();
 	});
 
@@ -26,7 +26,7 @@ describe("GridFs-Stream is a nicer way to store files", function () {
 			result.should.containEql("Dude");
 			done();
 		});
-	});	
+	});
 	it("can get files by metadata", function (done) {
 		fsAccess.storeFileFromDisk(FILE_NAME, A_KEY, function (result) {
 			fsAccess.getFileInfoByKeyInMetadata(A_KEY, function (fileInfo) {

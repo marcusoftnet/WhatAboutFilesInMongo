@@ -10,6 +10,10 @@ module.exports.removeAllFiles = function () {
 	mongoGridAccess.removeAllFiles(function (result) {
 		// I don't really care about the result in this case
 	});
+	//TODO: Get this to work...
+	/*mongoGridAccess.unlinkAllFiles(function () {
+		// or this result
+	});*/
 };
 
 module.exports.deleteFromDisk = function(filepath){

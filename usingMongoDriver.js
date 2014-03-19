@@ -5,6 +5,7 @@ var mongo = require('mongodb');
 // Let's pick some stuff out of Mongo for easier access
 var Db = mongo.Db;
 var Grid = mongo.Grid;
+var GridStore = mongo.GridStore;
 
 module.exports.storeSomeTextInGridFs = function (text, key, callback) {
   // We need to connect to the database first
@@ -81,6 +82,25 @@ module.exports.removeAllFiles = function (callback) {
     // This time around we will search for everyting and... then remove it
     db.collection("fs.files").findAndRemove({}, function (err, number) {
       if(err){ return console.dir(err); }
+    });
+  });
+};
+
+// The data of the files is stored in the fs.chunks collection
+// and apparently that needs to be unlinked...
+// here's a little function that unlinks all of the fs.chunks
+module.exports.unlinkAllFiles = function (callback) {
+  Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
+
+    GridStore.list(db, "fs.chunks", {id:true}, function(err, files) {
+      utils.mark();
+      console.log(files);
+
+      // Now we can unlink the files by passing the array of filenames
+      // to the unlink function of the gridstore
+      GridStore.unlink(db, files, function (err) {
+        if(err) console.log(err);
+      })
     });
   });
 };

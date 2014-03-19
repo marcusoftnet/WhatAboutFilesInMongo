@@ -1,7 +1,7 @@
 var should = require("should");
 var utils = require("../utils.js");
 var config = require('../config.js').config;
-var fsAccessor = require("../usingMongooseGridFs.js");
+var fsAccess = require("../usingMongooseGridFs.js");
 
 describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm using Mongoose... so what do I do now?", function () {
 
@@ -27,7 +27,13 @@ describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm usi
 		should.exists(mongoose.connection);
 		done();
 	});
-	it("using those properites, it's easy to store files");
+	it("using those properites, it's easy to store files", function (done) {
+		fsAccess.storeFileFromDisk(FILE_NAME, A_KEY, function (result) {
+			result.should.containEql("worked");
+			result.should.containEql("Dude");
+			done();
+		});
+	});
 	it("and read files back");
 	it("and delete them too, just as before");
 });

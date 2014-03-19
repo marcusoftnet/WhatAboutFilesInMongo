@@ -14,6 +14,7 @@ describe("GridFs-Stream is a nicer way to handle GridFs IMHO", function () {
 	});
 
 	afterEach(function (done) {
+		utils.deleteFromDisk(OUTPUT_FILE_PATH);
 		utils.removeAllFiles();
 		done();
 	});

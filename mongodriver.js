@@ -30,8 +30,6 @@ module.exports.storeSomeTextInGridFs = function (text, key, callback) {
 
       // If no errors
       if(!err) {
-        console.log("Finished writing file to Mongo");
-
         // Ok, no error. Let's return the whole thing
         callback(fileInfo);
       };
@@ -53,8 +51,6 @@ module.exports.getFileById = function (id, callback ) {
     grid.get(id, function(err, data) {
       // If no errors
       if(!err) {
-        console.log("Got the file from Mongo");
-
         // Ok, no error. Let's return the DATA, content of the file
         // as a string, to be nice...
         callback(data.toString());
@@ -80,30 +76,11 @@ module.exports.deleteFile = function (id, callback) {
   });
 };
 
-module.exports.storeFileFromDisk = function (filePath, key, callback) {
+module.exports.removeAllFiles = function (callback) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-    if(err){ return console.dir(err); }
-
-    // Now, let's read the file
-    fs.readFile(filePath, function (err, filedata) {
-      // Create the grid
-      var grid = new Grid(db, 'fs');
-
-      // and put the file data
-      // probably best convert it to a buffer...
-      // I really don't understand why I should have to think about this.
-      var buffer = new Buffer(filedata);
-
-      // remember to set the content type
-      grid.put(buffer, {metadata:{key:key}, content_type: 'image'}, function(err, fileInfo) {
-
-      // If no errors
-      if(!err) {
-        console.log("Finished writing file to Mongo");
-
-        // Ok, no error. Let's return the whole thing
-        callback(fileInfo);
-      };
+    // This time around we will search for everyting and... then remove it
+    db.collection("fs.files").findAndRemove({}, function (err, number) {
+      if(err){ return console.dir(err); }
     });
   });
 };

@@ -5,10 +5,11 @@ var fsAccess = require("../usingMongooseGridFs.js");
 
 describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm using Mongoose... so what do I do now?", function () {
 
-	var A_KEY = "a_key_to_retrive_the_file_by";
+	var A_KEY = "";
 	var OUTPUT_FILE_PATH = './img/b.gif';
 
 	beforeEach(function (done) {
+		A_KEY = utils.GetTestKey();
 		utils.deleteFileFromDisk(OUTPUT_FILE_PATH);
 		done();
 	});
@@ -33,6 +34,42 @@ describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm usi
 			done();
 		});
 	});
-	it("and read files back");
-	it("and delete them too, just as before");
+	it("and read file metadata back, of course", function (done) {
+		fsAccess.storeFileFromDisk(utils.TEST_FILENAME, A_KEY, function (result) {
+			fsAccess.getFileInfoByKeyInMetadata(A_KEY, function (fileInfo) {
+				should.exists(fileInfo);
+				fileInfo.filename.should.eql(utils.TEST_FILENAME);
+				done();
+			});
+		});
+	});
+	it("and ... yawn ... streaming", function (done) {
+		fsAccess.storeFileFromDisk(utils.TEST_FILENAME, A_KEY, function (result) {
+			fsAccess.streamFileForKey(A_KEY, function (fileReadStream) {
+				should.exists(fileReadStream);
+
+				var ws = fs.createWriteStream(OUTPUT_FILE_PATH);
+				fileReadStream.pipe(ws);
+				fs.existsSync(OUTPUT_FILE_PATH).should.eql(true);
+				done();
+			});
+		});
+	});
+
+	it("and delete them too, just as before", function (done) {
+		fsAccess.storeFileFromDisk(utils.TEST_FILENAME, A_KEY, function (result) {
+			fsAccess.deleteFileByFileName(utils.TEST_FILENAME, function (result) {
+				result.should.containEql(utils.TEST_FILENAME);
+				result.should.containEql('gone');
+				done();
+			});
+		});
+	});
+
+	describe("But... that's not really any difference at all?", function () {
+		it("No, it's just simpler to create the gridfs-stream object, from the mongoose properties", function (done) {
+			"Yes".should.eql("Yes");
+			done();
+		})
+	})
 });

@@ -74,12 +74,16 @@ module.exports.getFileInfoByKeyInMetadata = getFileInfoByKeyInMetadata;
 module.exports.streamFileForKey = function (key, callback) {
 	getFileInfoByKeyInMetadata(key, function (fileInfo) {
 		Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
+			if(err) {console.log(err); return;};
 			// Create the gridfs-stream object as normal
 			var gfs = Grid(db, mongo);
 
 			// and now create a readstream and pass it back
-			var rs = gfs.createReadStream({_id : fileInfo._id});
-			callback(rs);
+			if(fileInfo){
+				var rs = gfs.createReadStream({ _id : fileInfo._id});
+				callback(rs);
+			};
+			callback(null);
 		});
 	});
 };

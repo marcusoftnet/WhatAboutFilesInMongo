@@ -3,7 +3,12 @@ var fsAccessor = require("../usingMongoDriver.js");
 var utils = require("../utils.js");
 
 describe("The Mongo driver has a api to the GridFs", function () {
-	var A_KEY = "a_key_to_retrive_the_file_by";
+	var A_KEY = "";
+
+	beforeEach(function (done) {
+		A_KEY = utils.GetTestKey();
+		done();
+	});
 
 	afterEach(function (done) {
 		utils.removeAllFiles();

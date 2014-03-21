@@ -4,10 +4,11 @@ var utils = require("../utils.js");
 var fsAccess = require("../usingGridFsStream.js");
 
 describe("GridFs-Stream is a nicer way to handle GridFs IMHO", function () {
-	var A_KEY = "a_key_to_retrive_the_file_by";
 	var OUTPUT_FILE_PATH = './img/b.gif';
+	var A_KEY = "";
 
 	beforeEach(function (done) {
+		A_KEY = utils.GetTestKey();
 		utils.deleteFileFromDisk(OUTPUT_FILE_PATH);
 		done();
 	});

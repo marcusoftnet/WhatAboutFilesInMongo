@@ -60,7 +60,7 @@ module.exports.getFileById = function (id, callback ) {
   });
 };
 
-module.exports.deleteFile = function (id, callback) {
+var deleteFile = function (id, callback) {
   // Open the ... bah - I'll start leaving obvious comments out
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
     if(err){ return console.dir(err); }
@@ -76,6 +76,7 @@ module.exports.deleteFile = function (id, callback) {
     });
   });
 };
+module.exports.deleteFile = deleteFile;
 
 module.exports.removeAllFiles = function (callback) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
@@ -88,9 +89,27 @@ module.exports.removeAllFiles = function (callback) {
 
 module.exports.unlinkFile = function (filename) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-
     GridStore.unlink(db, filename, function (err, fileinfo) {
       if(err) console.long(err);
+    });
+  });
+};
+
+module.exports.unlinkAllFiles = function () {
+  Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
+
+    db.collection("fs.files").find({}).toArray(function (err, files) {
+
+      var grid = new Grid(db, 'fs');
+      for (var i = 0; i < files.length; i++) {
+        var f = files[i];
+
+        if(f){
+          grid.delete(files[i]._id, function(err) {
+            if(err) console.dir(err);
+          });
+        };
+      };
     });
   });
 };

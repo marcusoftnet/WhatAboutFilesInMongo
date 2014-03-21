@@ -57,47 +57,61 @@ module.exports.storeFileFromDisk = function (filename, key, callback) {
 };
 
 var getFileInfoByKeyInMetadata = function (keySentIn, callback) {
-	// I'll loosen up the commenting
-	Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-		// Noteworthy that we only need the database here...
-		var gfs = Grid(db, mongo);
+	// Here we go again...
+	// create the grid, with our nifty little function
+	var gfs = createGrid();
 
-		// Now we query the file meta-data (remember that files are stored in two collections
-		// one for metadata (files) and one for the raw binary (chunks))
-		// this might look a bit strange around the metadata structure, normally you wou
-		// but metadata is an object  structure, and we're searching my, own made up,
-		// key-field of it.
-		gfs.files.findOne({ metadata: {key : keySentIn} }, function (err, fileInfo) {
-    		if (err) console.log(err);
-    		callback(fileInfo);
-		});
+	// now we just pull the meta data from the
+	// collection just like any old collection
+	// which it's probably is.
+	gfs.files.findOne({ metadata: {key : keySentIn} }, function (err, fileInfo) {
+		if (err) console.log(err);
+		callback(fileInfo);
 	});
 };
 module.exports.getFileInfoByKeyInMetadata = getFileInfoByKeyInMetadata;
 
 
 module.exports.streamFileForKey = function (key, callback) {
+	// Let's first get the file meta data by key
+	// with our function above
 	getFileInfoByKeyInMetadata(key, function (fileInfo) {
-		Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-			// Create the gridfs-stream object as normal
-			var gfs = Grid(db, mongo);
 
-			// and now create a readstream and pass it back
-			var rs = gfs.createReadStream({_id : fileInfo._id});
-			callback(rs);
-		});
+		// Now it's the usual drill
+		// Create grid... ah well you know this now
+		var gfs = createGrid();
+
+		// and now create a readstream and pass it back
+		var rs = gfs.createReadStream({_id : fileInfo._id});
+		callback(rs);
 	});
 };
 
 module.exports.deleteFileByFileName = function (filename, callback) {
-	Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
-		var gfs = Grid(db, mongo);
+	var gfs = createGrid();
 
-		// Here we use the filename property of the options structure
-		gfs.remove({ filename: filename}, function (err) {
-  			if (err) return handleError(err);
+	// Here we use the filename property of the options structure
+	gfs.remove({ filename: filename}, function (err) {
+		if (err) return handleError(err);
 
-  			callback('The file :' + filename +' is now gone');
-		});
+		callback('The file :' + filename +' is now gone');
+	});
+};
+
+
+module.exports.removeAllFiles = function () {
+	var gfs = createGrid();
+
+	gfs.files.find({ }, function (err, files) {
+		if (err) console(err);
+
+		if(files){
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+				console.log("About to remove: " + files.filename);
+
+				gfs.remove({ filename: files.filename}, function (err) {});
+			}
+		}
 	});
 };

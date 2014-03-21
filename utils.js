@@ -7,17 +7,23 @@ var TEST_TEXTFILENAME = 'testing.text';
 
 module.exports.TEST_TEXTFILENAME = 'testing.text';
 module.exports.TEST_FILENAME = 'testing.gif';
+module.exports.GetTestKey = function () {
+	return "akey_" + Math.random();
+};
+
 
 module.exports.mark = function () {
 	console.log("##############################")
 };
 
 module.exports.removeAllFiles = function () {
-	mongoGridAccess.unlinkFile(TEST_FILENAME);
-	mongoGridAccess.unlinkFile(TEST_TEXTFILENAME);
+	// var gridAccess = require("./usingMongooseGridFs.js");
+	// gridAccess.removeAllFiles();
+	// mongoGridAccess.unlinkFile(TEST_FILENAME);
+	// mongoGridAccess.unlinkFile(TEST_TEXTFILENAME);
 
-	mongoGridAccess.removeAllFiles(function (result) { });
-	
+	// mongoGridAccess.unlinkAllFiles();
+	// mongoGridAccess.removeAllFiles(function (result) { });
 };
 
 module.exports.deleteFileFromDisk = function(filepath){

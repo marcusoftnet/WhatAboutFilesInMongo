@@ -6,11 +6,10 @@ var fsAccess = require("../usingMongooseGridFs.js");
 describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm using Mongoose... so what do I do now?", function () {
 
 	var A_KEY = "a_key_to_retrive_the_file_by";
-	var FILE_NAME = "a.gif";
 	var OUTPUT_FILE_PATH = './img/b.gif';
 
 	beforeEach(function (done) {
-		utils.deleteFromDisk(OUTPUT_FILE_PATH);
+		utils.deleteFileFromDisk(OUTPUT_FILE_PATH);
 		done();
 	});
 
@@ -28,7 +27,7 @@ describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm usi
 		done();
 	});
 	it("using those properites, it's easy to store files", function (done) {
-		fsAccess.storeFileFromDisk(FILE_NAME, A_KEY, function (result) {
+		fsAccess.storeFileFromDisk(utils.TEST_FILENAME, A_KEY, function (result) {
 			result.should.containEql("worked");
 			result.should.containEql("Dude");
 			done();

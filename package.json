@@ -23,7 +23,8 @@
     "monk": "*",
     "express" : "*",
     "gridfs-stream" : "*",
-    "mongodb" : "*"
+    "mongodb" : "*",
+    "mongoose" : "*"
   },
   "devDependencies": {
     "mocha": "*",

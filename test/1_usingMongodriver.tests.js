@@ -11,7 +11,7 @@ describe("The Mongo driver has a api to the GridFs", function () {
 	});
 
 	it("that can store text as a file (why I really don't know...)", function (done) {
-		fsAccessor.storeSomeTextInGridFs("The text I want to store", A_KEY, function (fileInfo) {
+		fsAccessor.storeSomeTextInGridFs("The text I want to store", utils.TEST_TEXTFILENAME, A_KEY, function (fileInfo) {
 			should.exists(fileInfo);
 			fileInfo._id.should.not.be.empty;
 			done();
@@ -19,7 +19,7 @@ describe("The Mongo driver has a api to the GridFs", function () {
 	});
 
 	it("and can get it back out again...", function (done) {
-		fsAccessor.storeSomeTextInGridFs("The text I want to store", A_KEY, function (fileInfo) {
+		fsAccessor.storeSomeTextInGridFs("The text I want to store", utils.TEST_TEXTFILENAME, A_KEY, function (fileInfo) {
 			fsAccessor.getFileById(fileInfo._id, function(textFromFile) {
 				should.exists(textFromFile);
 				textFromFile.should.eql("The text I want to store");
@@ -29,7 +29,7 @@ describe("The Mongo driver has a api to the GridFs", function () {
 	});
 
 	it("and can deleted things too", function (done) {
-		fsAccessor.storeSomeTextInGridFs("The text I want to store", A_KEY, function (fileInfo) {
+		fsAccessor.storeSomeTextInGridFs("The text I want to store", utils.TEST_TEXTFILENAME, A_KEY, function (fileInfo) {
 			fsAccessor.deleteFile(fileInfo._id, function (err) {
 				should.not.exists(err);
 				done();

@@ -7,7 +7,7 @@ var Db = mongo.Db;
 var Grid = mongo.Grid;
 var GridStore = mongo.GridStore;
 
-module.exports.storeSomeTextInGridFs = function (text, key, callback) {
+module.exports.storeSomeTextInGridFs = function (text, filename, key, callback) {
   // We need to connect to the database first
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
     // Check for errors and bail
@@ -27,7 +27,7 @@ module.exports.storeSomeTextInGridFs = function (text, key, callback) {
 
     // And that let's us "put" the Buffer...
     // a bit low level if you ask me...
-    grid.put(buffer, {metadata:{key:key}, content_type: 'text'}, function(err, fileInfo) {
+    grid.put(buffer, {metadata:{key:key}, filename : filename, content_type: 'text'}, function(err, fileInfo) {
 
       // If no errors
       if(!err) {
@@ -86,21 +86,11 @@ module.exports.removeAllFiles = function (callback) {
   });
 };
 
-// The data of the files is stored in the fs.chunks collection
-// and apparently that needs to be unlinked...
-// here's a little function that unlinks all of the fs.chunks
-module.exports.unlinkAllFiles = function (callback) {
+module.exports.unlinkFile = function (filename) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
 
-    GridStore.list(db, "fs.chunks", {id:true}, function(err, files) {
-      utils.mark();
-      console.log(files);
-
-      // Now we can unlink the files by passing the array of filenames
-      // to the unlink function of the gridstore
-      GridStore.unlink(db, files, function (err) {
-        if(err) console.log(err);
-      })
+    GridStore.unlink(db, filename, function (err, fileinfo) {
+      if(err) console.long(err);
     });
   });
 };

@@ -17,8 +17,8 @@ module.exports.mark = function () {
 };
 
 module.exports.removeAllFiles = function () {
-	// var gridAccess = require("./usingMongooseGridFs.js");
-	// gridAccess.removeAllFiles();
+	var gridAccess = require("./usingMongooseGridFs.js");
+	gridAccess.removeAllFiles();
 	// mongoGridAccess.unlinkFile(TEST_FILENAME);
 	// mongoGridAccess.unlinkFile(TEST_TEXTFILENAME);
 

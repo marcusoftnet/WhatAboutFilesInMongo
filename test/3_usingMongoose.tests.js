@@ -25,6 +25,7 @@ describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm usi
 
 		should.exists(mongoose.mongo);
 		should.exists(mongoose.connection);
+		should.exists(mongoose.connection.db);
 		done();
 	});
 	it("using those properites, it's easy to store files", function (done) {
@@ -70,6 +71,6 @@ describe("Hey granpa, I'm not using the default MongoDb driver anymore...I'm usi
 		it("No, it's just simpler to create the gridfs-stream object, from the mongoose properties", function (done) {
 			"Yes".should.eql("Yes");
 			done();
-		})
-	})
+		});
+	});
 });

@@ -87,6 +87,17 @@ module.exports.removeAllFiles = function (callback) {
   });
 };
 
+module.exports.kill = function () {
+  Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
+    db.collection("fs.chunks").drop(function (err, reply) {
+      if(err) console.log(err);
+    });
+    db.collection("fs.files").drop(function (err, reply) {
+      if(err) console.log(err);
+    });
+  });
+};
+
 module.exports.unlinkFile = function (filename) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
     GridStore.unlink(db, filename, function (err, fileinfo) {

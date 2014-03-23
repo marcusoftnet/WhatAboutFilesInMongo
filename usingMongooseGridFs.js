@@ -18,22 +18,24 @@ Grid.mongo = mongoose.mongo;
 // Secondly, the database parameter can be pulled from the mongoose connection
 // We wrap this in a little function that returns the grid
 var createGrid = function () {
+	// Note that we need to use the .createConnection-function
+	// to get the connection object to hold on to
 	// We need to make sure that the connection is open.
 	// and of course readyState 0 is Not open. What did you think?
 	if(mongoose.connection.readyState === 0) {
 
 		// Ok, not open yet.
 		// lets open it
-		mongoose.connect("mongodb://" + config.mongoDbUrl);
-	}
+		connection = mongoose.createConnection("mongodb://" + config.mongoDbUrl);
+	};
 
 	// Creating the grid is now easy
-	// return Grid(mongoose.connection, Grid.mongo);
+	// return Grid(connection.db, Grid.mongo);
 
 	// In fact... since we have set the Grid.mongo already
 	// we could use a constructor that takes only the connection
 	// like this:
-	return Grid(mongoose.connection);
+	return Grid(connection.db);
 };
 
 

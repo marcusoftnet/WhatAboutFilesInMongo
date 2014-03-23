@@ -78,6 +78,9 @@ var deleteFile = function (id, callback) {
 };
 module.exports.deleteFile = deleteFile;
 
+
+// MARCUS history of failures trying to remove files completely
+// None of these do the job properly. 
 module.exports.removeAllFiles = function (callback) {
   Db.connect("mongodb://" + config.mongoDbUrl, function(err, db) {
     // This time around we will search for everyting and... then remove it
